@@ -1,0 +1,57 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "assets/primevue/tailwind.css";
+@import "tailwindcss/utilities";
+@import "primeicons/primeicons.css";
+
+:root {
+  --color-brand: #1e40af;
+  --color-secondary: #06b6d4;
+  --color-accent: #22c55e;
+  --color-background: #f8fafc;
+  --color-surface-0: 255, 255, 255;
+  --color-surface-50: 250, 250, 250;
+  --color-surface-100: 245, 245, 245;
+  --color-surface-200: 238, 238, 238;
+  --color-surface-300: 224, 224, 224;
+  --color-surface-400: 189, 189, 189;
+  --color-surface-500: 158, 158, 158;
+  --color-surface-600: 117, 117, 117;
+  --color-surface-700: 97, 97, 97;
+  --color-surface-800: 66, 66, 66;
+  --color-surface-900: 33, 33, 33;
+  --color-surface-950: 3, 6, 23;
+  --color-icon: #6b7280;
+}
+
+body {
+  background: var(--color-background);
+  font-family: "Inter", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+.page-enter-active,
+.page-leave-active {
+  transition: all 0.4s;
+}
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+  filter: blur(1rem);
+}
+
+.form-label {
+  @apply text-surface-700 font-normal text-sm leading-[150%];
+}
+.text-error {
+  @apply text-red-500 font-normal text-xs leading-3;
+}
+p {
+  margin-bottom: 0;
+}
