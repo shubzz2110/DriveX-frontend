@@ -55,3 +55,6 @@ body {
 p {
   margin-bottom: 0;
 }
+.page-heading {
+  @apply text-[28px] font-normal text-surface-800 leading-9;
+}

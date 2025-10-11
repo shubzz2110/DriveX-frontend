@@ -1,12 +1,12 @@
 <template>
   <div class="flex flex-col w-full h-full min-h-dvh overflow-hidden">
     <DriveHeader />
-    <div class="flex items-center w-full h-[calc(100vh-51px)] overflow-y-auto">
+    <div class="flex flex-col w-full overflow-hidden">
       <DriveSidebar />
-      <div class="flex flex-col w-full h-full flex-1 overflow-hidden">
-        <Transition name="fade">
-          <Loading v-if="isLoading" />
-        </Transition>
+      <Transition name="fade">
+        <Loading v-if="isLoading" />
+      </Transition>
+      <div class="flex flex-col w-full h-[calc(100vh-61px)] overflow-auto lg:ml-[249px] lg:max-w-[calc(100dvw-249px)]">
         <slot />
       </div>
     </div>

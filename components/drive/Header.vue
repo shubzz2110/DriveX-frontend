@@ -2,21 +2,9 @@
   <div
     class="flex items-center justify-between w-full h-max px-5 py-2.5 bg-white border-b border-surface-300"
   >
-    <div class="flex items-center gap-5">
-      <button
-        v-tool-tip="{
-          value: 'Collapse sidebar',
-          showDelay: 300,
-          hideDelay: 300,
-        }"
-        class="text-surface-600 p-1.5 hover:bg-surface-300 flex items-center justify-center rounded-md transition-all"
-      >
-        <i class="pi pi-bars leading-0 text-2xl"></i>
-      </button>
-      <div class="flex items-center gap-2.5">
-        <img src="/logo.svg" class="h-10" alt="" />
-        <h1 class="app-name">DriveX</h1>
-      </div>
+    <div class="flex items-center gap-2.5">
+      <img src="/logo.svg" class="h-10" alt="" />
+      <h1 class="app-name">DriveX</h1>
     </div>
     <!-- <IconField>
       <InputIcon class="pi pi-search" />
@@ -37,11 +25,11 @@
       </ToggleSwitch> -->
       <button
         v-tool-tip="{
-          value: 'Help with Taskify',
+          value: 'Help with DriveX',
           showDelay: 300,
           hideDelay: 300,
         }"
-        class="utility-button text-surface-500 border border-surface-800"
+        class="utility-button text-surface-700 border border-surface-800"
       >
         <i class="pi pi-question text-xs"></i>
       </button>
@@ -51,6 +39,17 @@
         class="utility-button bg-pink-500 text-sm text-surface-0"
       >
         SH
+      </button>
+      <button
+        v-tool-tip="{
+          value: 'Collapse sidebar',
+          showDelay: 300,
+          hideDelay: 300,
+        }"
+        class="text-surface-600 p-1.5 hover:bg-surface-300 flex items-center justify-center rounded-md transition-all lg:hidden"
+        @click="appStore.toggleSidebar()"
+      >
+        <i class="pi pi-bars leading-0 text-xl"></i>
       </button>
       <!-- <button v-else @click="toggle">
         <img
@@ -81,17 +80,19 @@
               alt="avatar"
             /> -->
             <div
-              class="min-w-24 min-h-24 h-24 w-24 rounded-full bg-blk-30 border border-surface-300 flex items-center justify-center"
+              class="min-w-24 min-h-24 h-24 w-24 rounded-full bg-pink-500 flex items-center justify-center"
             >
-              <h1 class="text-surface-800 text-3xl capitalize">SH</h1>
+              <h1 class="text-surface-0 text-3xl capitalize">SH</h1>
             </div>
             <div class="flex flex-col space-y-1.5 flex-grow">
               <h1
-                class="text-surface-800 font-normal text-sm leading-4 capitalize"
+                class="text-surface-800 font-semibold text-sm leading-4 capitalize"
               >
                 Shubham Homkar
               </h1>
-              <p class="text-surface-400 font-normal text-sm">homkar1997@gmail.com</p>
+              <p class="text-surface-400 font-normal text-sm">
+                homkar1997@gmail.com
+              </p>
               <button
                 class="text-sm font-normal text-blue-500 hover:text-blue-600 underline w-max"
               >
@@ -106,6 +107,7 @@
 </template>
 
 <script setup lang="ts">
+const appStore = useAppStore()
 const op = ref();
 const toggle = (event: any) => {
   op.value.toggle(event);

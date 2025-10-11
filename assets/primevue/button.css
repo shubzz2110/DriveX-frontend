@@ -2,8 +2,8 @@
 
 .p-button {
   @apply inline-flex cursor-pointer select-none items-center justify-center overflow-hidden relative
-        p-2.5 transition-colors duration-200 gap-2 rounded-md
-        disabled:cursor-default font-semibold text-sm leading-5;
+        px-5 py-[17px] transition-colors duration-200 gap-2
+        disabled:cursor-default font-semibold text-sm leading-full w-full;
 }
 
 .p-button-icon-right {
@@ -80,7 +80,7 @@
 }
 
 .p-button-brand {
-  @apply w-full py-4.5 rounded-none bg-brand text-surface-0 font-semibold text-sm leading-full cursor-pointer hover:opacity-80 transition-all ease-in-out duration-300;
+  @apply w-full py-[17px] rounded-none bg-brand text-surface-0 font-semibold text-sm leading-full cursor-pointer hover:opacity-80 transition-all ease-in-out duration-300;
 }
 
 .p-button-secondary {
@@ -144,8 +144,8 @@
 
 .p-button-danger {
   @apply bg-red-500 enabled:hover:bg-red-600 enabled:active:bg-red-700
-        border-red-500 enabled:hover:border-red-600 enabled:active:border-red-700
-        text-white enabled:hover:text-white enabled:active:text-white
+        /* border-red-500 enabled:hover:border-red-600 enabled:active:border-red-700 */
+        text-white enabled:hover:text-white enabled:active:text-white font-medium
         dark:bg-red-400 dark:enabled:hover:bg-red-300 dark:enabled:active:bg-red-200
         dark:border-red-400 dark:enabled:hover:border-red-300 dark:enabled:active:border-red-200
         dark:text-red-950 dark:enabled:hover:text-red-950 dark:enabled:active:text-red-950

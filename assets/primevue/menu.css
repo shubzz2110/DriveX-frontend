@@ -1,8 +1,8 @@
 .p-menu {
-    @apply bg-surface-800 dark:bg-surface-900 
-        text-surface-0 dark:text-surface-0 
+    @apply bg-surface-0 dark:bg-surface-900 
+        text-surface-800 dark:text-surface-0 
         border border-surface-300 dark:border-surface-700
-        rounded-md min-w-52 mt-2.5
+        rounded-md min-w-40 mt-2.5
 }
 
 .p-menu-list {
@@ -10,7 +10,7 @@
 }
 
 .p-menu-item {
-    @apply text-surface-0 text-sm font-normal dark:text-surface-0;
+    @apply text-surface-800 text-sm font-normal dark:text-surface-0;
 }
 
 .p-menu-item-content {
@@ -19,7 +19,7 @@
 
 .p-menu-item-link {
     @apply cursor-pointer flex items-center no-underline overflow-hidden relative text-inherit
-        px-3 py-2 gap-2 select-none outline-none
+        px-3 py-2.5 gap-2 select-none outline-none
 }
 
 /* .p-menu-item-icon {
@@ -35,11 +35,11 @@
 } */
 
 .p-menu-item:not(.p-disabled) .p-menu-item-content:hover {
-    @apply bg-surface-300 dark:bg-surface-800 text-surface-0 dark:text-surface-0 rounded-md
+    @apply bg-surface-200 dark:bg-surface-800 text-surface-800 dark:text-surface-0 rounded-md
 }
 
 .p-menu-item:not(.p-disabled) .p-menu-item-content:hover .p-menu-item-icon {
-    @apply text-surface-0 dark:text-surface-400
+    @apply text-surface-800 dark:text-surface-400
 }
 
 .p-menu-overlay {
