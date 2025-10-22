@@ -59,11 +59,12 @@ export default {
         4.5: "18px",
       },
       screens: {
-        "2xl": "1440px"
+        "2xl": "1440px",
+        "4xl": "1920px"
       },
       lineHeight: {
         "full": "100%",
-      }
+      },
     },
   },
   darkMode: "class",

@@ -13,7 +13,7 @@
       class="flex flex-col w-full h-max space-y-5 mt-10"
     >
       <div class="flex flex-col space-y-1.5">
-        <label for="id-login-email" class="form-label">Email Address: </label>
+        <label for="id-login-email" class="form-label">Email: </label>
         <IconField>
           <InputIcon class="pi pi-envelope" />
           <InputText
