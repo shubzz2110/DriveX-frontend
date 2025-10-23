@@ -76,12 +76,15 @@
           <template #body="{ data }">
             <div class="flex items-center gap-2">
               <i class="pi pi-file text-surface-600 text-base"></i>
-              <span class="truncate max-w-[180px] font-semibold">{{
+              <span class="truncate max-w-[250px] font-semibold">{{
                 data.name
               }}</span>
             </div>
           </template>
         </Column>
+
+        <!-- 💾 Type -->
+        <Column field="extension" header="Extension" style="min-width: 100px" />
 
         <!-- 💾 Size -->
         <Column field="size" header="Size" style="min-width: 100px" />
@@ -103,15 +106,27 @@
         <!-- ⚙️ Actions -->
         <Column header="Action" style="min-width: 90px; text-align: right">
           <template #body>
-            <button
-              class="w-8 h-8 text-surface-600 hover:bg-surface-200 rounded-full flex items-center justify-center transition-colors cursor-pointer"
-            >
-              <i class="pi pi-ellipsis-h text-sm"></i>
-            </button>
+            <div class="flex items-center gap-2.5">
+              <button
+                class="w-10 h-10 text-surface-600 hover:bg-surface-200 rounded-full flex items-center justify-center transition-colors cursor-pointer"
+              >
+                <i class="pi pi-eye leading-none"></i>
+              </button>
+              <button
+                class="w-10 h-10 text-surface-600 hover:bg-surface-200 rounded-full flex items-center justify-center transition-colors cursor-pointer"
+              >
+                <i class="pi pi-trash leading-none"></i>
+              </button>
+            </div>
           </template>
         </Column>
       </DataTable>
     </div>
+    <DriveModalUploadFile
+      v-if="showUploadFileModal"
+      :showModal="showUploadFileModal"
+      @close-modal="closeUploadFileModal"
+    />
   </div>
 </template>
 
@@ -134,11 +149,15 @@ const sortOptions = [
 const files = ref(
   Array.from({ length: 50 }, (_, i) => ({
     name: `File_${i + 1}_Lorem_ipsum_dolor.pdf`,
+    extension: `PDF`,
     size: "34 MB",
     uploaded: "Sept 31, 2025",
     modified: "Sept 31, 2025, 14:14",
   }))
 );
+const appStore = useAppStore();
+const { closeUploadFileModal } = appStore
+const { showCreateFolderModal, showUploadFileModal } = storeToRefs(appStore)
 </script>
 
 <style scoped></style>

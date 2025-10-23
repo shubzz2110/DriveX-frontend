@@ -2,9 +2,7 @@
   <div
     class="flex flex-col bg-white h-full flex-1 border-r border-surface-300 transition-all duration-300 ease-in-out w-full fixed max-w-[90%] sm:max-w-[250px] z-50"
     :class="
-      appStore.showSidebar
-        ? '-translate-x-0'
-        : '-translate-x-full lg:translate-x-0'
+      showSidebar ? '-translate-x-0' : '-translate-x-full lg:translate-x-0'
     "
   >
     <div class="p-5 border-b border-surface-300">
@@ -61,12 +59,12 @@
 <script setup lang="ts">
 import type { MenuItem } from "primevue/menuitem";
 
-const appStore = useAppStore();
+const { showSidebar, openCreateFolderModal, openUploadFileModal } = useAppStore();
 const menu = ref();
 
 const menuItems: MenuItem[] = [
-  { label: "Upload File", icon: "pi pi-file" },
-  { label: "Create Folder", icon: "pi pi-folder" },
+  { label: "Upload File", icon: "pi pi-file", command: () => openUploadFileModal() },
+  { label: "Create Folder", icon: "pi pi-folder", command: () => openCreateFolderModal() },
 ];
 
 const toggle = (event: Event) => {

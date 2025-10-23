@@ -13,9 +13,11 @@
       </div>
       <button
         class="min-w-8 min-h-8 w-8 h-8 text-surface-700 cursor-pointer hover:bg-surface-300 rounded-full"
+        @click="toggle"
       >
         <i class="pi pi-ellipsis-v text-sm leading-none"></i>
       </button>
+      <Menu ref="menu" id="overlay_menu" :model="menuItems" :popup="true" />
     </div>
     <div class="border border-surface-300 flex-1 bg-white"></div>
     <h1 class="text-surface-600 font-normal text-xs leading-3">
@@ -25,11 +27,21 @@
 </template>
 
 <script setup lang="ts">
+import type { MenuItem } from 'primevue/menuitem';
+
 // defineProps<{
 //   name: string;
 //   type?: string;
 //   size?: string;
 //   thumbnail?: string;
 // }>();
+const menu = ref();
+const menuItems: MenuItem[] = [
+  { label: "View", icon: "pi pi-eye" },
+  { label: "Move to trash", icon: "pi pi-trash" },
+];
+const toggle = (event: Event) => {
+  menu.value.toggle(event);
+};
 </script>
 <style scoped></style>
