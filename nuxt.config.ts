@@ -38,4 +38,9 @@ export default defineNuxtConfig({
       theme: "none",
     },
   },
+  // runtimeConfig: {
+  //   public: {
+  //     apiBaseUrlLocal: process.env.API_BASE_URL_LOCAL,
+  //   }
+  // }
 })
