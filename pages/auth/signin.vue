@@ -77,7 +77,14 @@
 import * as yup from "yup";
 definePageMeta({
   layout: "auth",
+  middleware: "login-signup",
 });
+
+const { $axios } = useNuxtApp();
+const router = useRouter();
+const toast = useToast();
+const authStore = useAuthStore();
+
 const email = ref<string>("");
 const password = ref<string>("");
 const errors = ref<any>({});
@@ -128,7 +135,30 @@ const validateForm = async () => {
 
 const handleLoginUser = async () => {
   if (await validateForm()) {
-    console.log("first");
+    try {
+      isLoading.value = true;
+      const response = await $axios.post("/auth/login/", {
+        email: email.value,
+        password: password.value,
+      });
+      if (response && response.data && response.data?.success) {
+        authStore.setUser(response?.data?.user);
+        authStore.setToken(response?.data?.access);
+        errors.value = {};
+        // router.push("/drive");
+        window.location.href = '/drive'
+      } else {
+        toast.add({
+          severity: "error",
+          summary: "Sign in failed",
+          detail: "Something went wrong",
+        });
+      }
+    } catch (error: any) {
+      console.error("Signin:", error);
+    } finally {
+      isLoading.value = false;
+    }
   }
 };
 

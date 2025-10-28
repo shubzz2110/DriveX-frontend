@@ -49,6 +49,7 @@
             option-value="value"
             placeholder="Sort By"
             checkmark
+            showClear
           />
         </IconField>
       </div>
@@ -60,7 +61,7 @@
       <div
         class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 4xl:grid-cols-6 gap-5 overflow-auto"
       >
-        <DriveCard v-for="n in 20" :key="n" />
+        <DriveCard v-for="file in files" :key="file.id" :file="file" />
       </div>
     </div>
     <div v-if="view === 'list'" class="overflow-hidden flex-1">
@@ -126,14 +127,24 @@
       v-if="showUploadFileModal"
       :showModal="showUploadFileModal"
       @close-modal="closeUploadFileModal"
+      :fetchFiles="fetchFiles"
     />
   </div>
 </template>
 
 <script setup lang="ts">
+import type { FileItem } from '~/lib/definations';
+
 definePageMeta({
   layout: "main",
+  middleware: 'auth',
 });
+const appStore = useAppStore();
+const { closeUploadFileModal } = appStore
+const { showCreateFolderModal, showUploadFileModal } = storeToRefs(appStore)
+const { startLoading, stopLoading } = useLoading()
+const { $axios } = useNuxtApp()
+
 const showFilters = ref<boolean>(false);
 const view = ref<"card" | "list">("card");
 const viewOptions = ref([
@@ -146,18 +157,24 @@ const sortOptions = [
   { name: "A - Z", value: "az" },
   { name: "Z - A", value: "za" },
 ];
-const files = ref(
-  Array.from({ length: 50 }, (_, i) => ({
-    name: `File_${i + 1}_Lorem_ipsum_dolor.pdf`,
-    extension: `PDF`,
-    size: "34 MB",
-    uploaded: "Sept 31, 2025",
-    modified: "Sept 31, 2025, 14:14",
-  }))
-);
-const appStore = useAppStore();
-const { closeUploadFileModal } = appStore
-const { showCreateFolderModal, showUploadFileModal } = storeToRefs(appStore)
+const files = ref<FileItem[]>([]);
+
+onMounted(() => {
+  fetchFiles()
+})
+
+const fetchFiles = async () => {
+  try {
+    startLoading()
+    const response = await $axios.get('/upload/files/');
+    console.log(response)
+    files.value = response.data
+  } catch (error) {
+    console.log(error)
+  } finally {
+    stopLoading()
+  }
+}
 </script>
 
 <style scoped></style>

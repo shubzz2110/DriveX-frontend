@@ -35,10 +35,10 @@
       </button>
       <button
         @click="toggle"
-        v-tool-tip="{ value: 'Shubham Homkar', showDelay: 300, hideDelay: 300 }"
+        v-tool-tip="{ value: authStore.user?.name, showDelay: 300, hideDelay: 300 }"
         class="utility-button bg-pink-500 text-sm text-surface-0"
       >
-        SH
+        {{ getInitials(authStore.user?.name) }}
       </button>
       <button
         v-tool-tip="{
@@ -63,9 +63,10 @@
           <div class="flex items-center justify-between w-full h-max">
             <div class="flex items-center gap-2.5">
               <img src="/logo.svg" class="h-8" alt="" />
-              <h1 class="text-brand font-normal text-base leading-5">DriveX</h1>
+              <h1 class="text-brand font-normal text-lg leading-5">DriveX</h1>
             </div>
             <button
+              @click="logout"
               class="px-3 py-1.5 rounded transition-all hover:bg-surface-300 text-surface-800 font-normal text-sm leading-5 flex items-center gap-2.5"
             >
               <i class="pi pi-sign-out"></i>
@@ -82,16 +83,16 @@
             <div
               class="min-w-24 min-h-24 h-24 w-24 rounded-full bg-pink-500 flex items-center justify-center"
             >
-              <h1 class="text-surface-0 text-3xl capitalize">SH</h1>
+              <h1 class="text-surface-0 text-3xl capitalize">{{ getInitials(authStore.user?.name) }}</h1>
             </div>
             <div class="flex flex-col space-y-1.5 flex-grow">
               <h1
                 class="text-surface-800 font-semibold text-sm leading-4 capitalize"
               >
-                Shubham Homkar
+                {{ authStore.user?.name }}
               </h1>
-              <p class="text-surface-400 font-normal text-sm">
-                homkar1997@gmail.com
+              <p class="text-surface-500 font-normal text-sm">
+                {{ authStore.user?.email }}
               </p>
               <button
                 class="text-sm font-normal text-blue-500 hover:text-blue-600 underline w-max"
@@ -108,10 +109,31 @@
 
 <script setup lang="ts">
 const appStore = useAppStore()
+const { $axios } = useNuxtApp()
+const authStore = useAuthStore()
+const router = useRouter()
+
 const op = ref();
+
 const toggle = (event: any) => {
   op.value.toggle(event);
 };
+
+const logout = async () => {
+  try {
+    await $axios.post('/auth/logout/')
+
+    // Clear all local state
+    authStore.setToken(null)
+    authStore.setUser(null)
+    localStorage.clear()
+
+    // Redirect to signin and force reload
+    window.location.reload()
+  } catch (error) {
+    console.error('Logout failed:', error)
+  }
+}
 </script>
 
 <style scoped>

@@ -141,10 +141,7 @@
       className="pt-5 text-sm text-surface-800 font-semibold leading-full text-center"
     >
       Already have an account?
-      <NuxtLink
-        to="/auth/signin"
-        className="text-brand hover:underline"
-      >
+      <NuxtLink to="/auth/signin" className="text-brand hover:underline">
         Sign in
       </NuxtLink>
     </p>
@@ -154,9 +151,16 @@
 <script setup lang="ts">
 import { NuxtLink } from "#components";
 import * as yup from "yup";
+import type { RegisterUserApiModel } from "~/lib/definations";
 definePageMeta({
   layout: "auth",
+  middleware: 'login-signup',
 });
+
+const { $axios } = useNuxtApp();
+const toast = useToast();
+const router = useRouter();
+
 const step = ref<1 | 2>(1);
 const fullName = ref<string>("");
 const email = ref<string>("");
@@ -245,10 +249,48 @@ const handleStepOne = async () => {
 };
 
 const handleSignUp = async () => {
-  if(await validateForm()) {
-    console.log("first")
+  if (await validateForm()) {
+    try {
+      isLoading.value = true;
+      const payload: RegisterUserApiModel = {
+        name: fullName.value,
+        email: email.value,
+        password: password.value,
+      };
+      const response = await $axios.post("/auth/signup/", payload);
+      if (response && response.status === 201) {
+        toast.add({
+          severity: "success",
+          summary: "Sign Up",
+          detail: "Signed up successfully, Login!",
+          life: 5000,
+        });
+        // resetForm()
+        router.push("/auth/signin");
+      } else {
+        toast.add({
+          severity: "error",
+          summary: "Error",
+          detail: "Something went wrong. Please try again",
+          life: 6000,
+        });
+      }
+    } catch (error: any) {
+      console.error("Signup Error:", error);
+    } finally {
+      isLoading.value = false;
+    }
   }
-}
+};
+
+// const resetForm = () => {
+//   fullName.value = ''
+//   email.value = ''
+//   password.value = ''
+//   confirmPassword.value = ''
+//   step.value = 1
+//   errors.value = {}
+// }
 
 const fields = {
   email,

@@ -61,17 +61,17 @@
 }
 
 .p-toast-message-success {
-  @apply bg-green-900/40 backdrop-blur border-green-900 text-green-500
+  @apply bg-green-50/95 backdrop-blur border-green-300 text-green-600
         dark:bg-green-500 dark:border-green-600 dark:text-surface-0
         shadow-[0px_4px_8px_0px_theme(colors.green.500/0.04)];
 }
 
 .p-toast-message-success .p-toast-detail {
-  @apply text-surface-0 dark:text-surface-0;
+  @apply text-surface-700 dark:text-surface-0;
 }
 
 .p-toast-message-success .p-toast-close-button {
-  @apply hover:bg-green-900 focus-visible:outline-green-600
+  @apply hover:bg-green-100 focus-visible:outline-green-600
         dark:hover:bg-white/5 dark:focus-visible:outline-green-500;
 }
 
@@ -91,17 +91,17 @@
 }
 
 .p-toast-message-error {
-  @apply bg-red-900/40 border-red-900 text-red-500 backdrop-blur
+  @apply bg-red-50/95 border-red-300 text-red-600 backdrop-blur
         dark:bg-red-500 dark:border-red-600 dark:text-surface-0
         shadow-[0px_4px_8px_0px_theme(colors.blue.500/0.04)];
 }
 
 .p-toast-message-error .p-toast-detail {
-  @apply text-surface-0 dark:text-surface-0;
+  @apply text-surface-700 dark:text-surface-0;
 }
 
 .p-toast-message-error .p-toast-close-button {
-  @apply hover:bg-red-900 focus-visible:outline-red-600
+  @apply hover:bg-red-100 focus-visible:outline-red-600
         dark:hover:bg-white/5 dark:focus-visible:outline-red-500;
 }
 

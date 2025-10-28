@@ -76,6 +76,7 @@
         ></button>
       </div>
       <Button
+        @click="uploadFiles"
         severity="brand"
         :label="`Upload ${selectedFiles.length} ${
           selectedFiles.length === 1 ? 'file' : 'files'
@@ -86,29 +87,55 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   showModal: boolean;
+  fetchFiles: () => void;
 }>();
 const emits = defineEmits(["closeModal"]);
+
+const { startLoading, stopLoading } = useLoading()
+const { $axios } = useNuxtApp()
+const toast = useToast()
 
 const selectedFiles = ref<File[]>([]);
 
 const handleFileInput = (e: Event) => {
   const files = Array.from((e.target as HTMLInputElement)?.files || []);
   selectedFiles.value = files;
-  console.log(selectedFiles.value);
 };
 
 const handleRemoveFile = (index: number) => {
   selectedFiles.value = selectedFiles.value.filter((file, i) => i !== index);
 };
 
-const formatFileSize = (bytes: number) => {
-  if (bytes === 0) return "0 Bytes";
-  const k = 1024;
-  const sizes = ["Bytes", "KB", "MB", "GB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
+const uploadFiles = async () => {
+  if (!selectedFiles.value.length) return;
+
+  const formData = new FormData();
+  selectedFiles.value.forEach((file) => {
+    formData.append("files", file);
+  });
+
+  try {
+    startLoading()
+    const response = await $axios.post('/upload/files/', formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      }
+    })
+    props.fetchFiles()
+    toast.add({
+      severity: 'success',
+      summary: "Success",
+      detail: "File has been uploaded successfully",
+      life: 5000
+    })
+    emits('closeModal')
+  } catch (error) {
+    console.log(error)
+  } finally {
+    stopLoading()
+  }
 };
 </script>
 

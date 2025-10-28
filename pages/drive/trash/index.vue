@@ -6,8 +6,9 @@
 
 <script setup lang="ts">
 definePageMeta({
-  layout: 'main'
-})
+  layout: "main",
+  middleware: 'auth',
+});
 </script>
 
 <style scoped>

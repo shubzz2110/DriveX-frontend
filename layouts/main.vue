@@ -10,7 +10,7 @@
         <slot />
       </div>
     </div>
-    <Toast />
+    <Toast :message="{ life: 5000 }" />
   </div>
 </template>
 
