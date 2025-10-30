@@ -7,7 +7,11 @@
       <div class="flex flex-col lg:flex-row xl:items-center gap-5">
         <IconField>
           <InputIcon class="pi pi-search" />
-          <InputText placeholder="Search in drive" class="xl:!w-96 w-full" />
+          <InputText
+            placeholder="Search in drive"
+            class="xl:!w-96 w-full"
+            v-model="search"
+          />
         </IconField>
         <Button
           v-if="!showFilters"
@@ -54,74 +58,51 @@
         </IconField>
       </div>
     </div>
-    <div
-      v-if="view === 'card'"
-      class="flex flex-col w-full h-full flex-1 overflow-hidden"
-    >
+    <div class="flex flex-col w-full h-full flex-1 overflow-hidden">
+      <!-- 🪣 Empty State -->
       <div
-        class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 4xl:grid-cols-6 gap-5 overflow-auto"
+        v-if="!files.length && search === ''"
+        class="flex flex-col items-center justify-center flex-1 max-w-60 mx-auto gap-7"
       >
-        <DriveCard v-for="file in files" :key="file.id" :file="file" />
+        <div
+          class="flex flex-col text-center items-center justify-center space-y-2.5"
+        >
+          <i class="pi pi-folder-open text-6xl text-surface-500"></i>
+          <h3 class="text-xl font-semibold text-surface-800">No files yet</h3>
+          <p class="text-surface-500 font-normal text-sm leading-4">
+            Upload your first file to get started.
+          </p>
+        </div>
+        <Button
+          label="Upload Files"
+          icon="pi pi-upload"
+          severity="brand"
+          @click="showUploadFileModal = true"
+        />
       </div>
-    </div>
-    <div v-if="view === 'list'" class="overflow-hidden flex-1">
-      <DataTable
-        :value="files"
-        scrollable
-        scroll-height="flex"
-        :lazy="true"
-        :paginator="false"
+
+      <div
+        v-else-if="view === 'card'"
+        class="flex flex-col w-full h-full gap-5 overflow-auto"
       >
-        <!-- 📄 File Name -->
-        <Column field="name" header="Name" style="min-width: 220px">
-          <template #body="{ data }">
-            <div class="flex items-center gap-2">
-              <i class="pi pi-file text-surface-600 text-base"></i>
-              <span class="truncate max-w-[250px] font-semibold">{{
-                data.name
-              }}</span>
-            </div>
-          </template>
-        </Column>
+        <div
+          class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 4xl:grid-cols-6 gap-5"
+        >
+          <DriveFolderCard
+            v-for="folder in rFolders"
+            :key="folder.id"
+            :folder="folder"
+            @open-folder="setParent"
+          />
+        </div>
+        <div
+          class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 4xl:grid-cols-6 gap-5"
+        >
+          <DriveCard v-for="file in rFiles" :key="file.id" :file="file" />
+        </div>
+      </div>
 
-        <!-- 💾 Type -->
-        <Column field="extension" header="Extension" style="min-width: 100px" />
-
-        <!-- 💾 Size -->
-        <Column field="size" header="Size" style="min-width: 100px" />
-
-        <!-- ⬆ Uploaded On -->
-        <Column
-          field="uploaded"
-          header="Uploaded On"
-          style="min-width: 140px"
-        />
-
-        <!-- ✏ Modified On -->
-        <Column
-          field="modified"
-          header="Modified On"
-          style="min-width: 180px"
-        />
-
-        <!-- ⚙️ Actions -->
-        <Column header="Action" style="min-width: 90px; text-align: right">
-          <template #body>
-            <div class="flex items-center gap-2.5">
-              <button
-                class="w-10 h-10 text-surface-600 hover:bg-surface-200 rounded-full flex items-center justify-center transition-colors cursor-pointer"
-              >
-                <i class="pi pi-eye leading-none"></i>
-              </button>
-              <button
-                class="w-10 h-10 text-surface-600 hover:bg-surface-200 rounded-full flex items-center justify-center transition-colors cursor-pointer"
-              >
-                <i class="pi pi-trash leading-none"></i>
-              </button>
-            </div>
-          </template>
-        </Column>
-      </DataTable>
+      <DriveListView v-else :files="[...rFolders, ...rFiles]" />
     </div>
     <DriveModalUploadFile
       v-if="showUploadFileModal"
@@ -129,24 +110,31 @@
       @close-modal="closeUploadFileModal"
       :fetchFiles="fetchFiles"
     />
+    <DriveModalCreateFolder
+      v-if="showCreateFolderModal"
+      :fetch-files="fetchFiles"
+      :showModal="showCreateFolderModal"
+      @close-modal="closeCreateFolderModal"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import type { FileItem } from '~/lib/definations';
+import type { FileItem } from "~/lib/definations";
 
 definePageMeta({
   layout: "main",
-  middleware: 'auth',
+  middleware: "auth",
 });
 const appStore = useAppStore();
-const { closeUploadFileModal } = appStore
-const { showCreateFolderModal, showUploadFileModal } = storeToRefs(appStore)
-const { startLoading, stopLoading } = useLoading()
-const { $axios } = useNuxtApp()
+const { closeUploadFileModal, closeCreateFolderModal } = appStore;
+const { showCreateFolderModal, showUploadFileModal } = storeToRefs(appStore);
+const { startLoading, stopLoading } = useLoading();
+const { $axios } = useNuxtApp();
 
 const showFilters = ref<boolean>(false);
 const view = ref<"card" | "list">("card");
+const search = ref<string>("");
 const viewOptions = ref([
   { icon: "pi pi-th-large ", value: "card" },
   { icon: "pi pi-list ", value: "list" },
@@ -158,23 +146,42 @@ const sortOptions = [
   { name: "Z - A", value: "za" },
 ];
 const files = ref<FileItem[]>([]);
+const parent = ref<FileItem | null>(null);
 
 onMounted(() => {
-  fetchFiles()
-})
+  fetchFiles();
+});
+
+const rFiles = computed(() => files.value.filter((file) => !file.is_folder));
+const rFolders = computed(() => files.value.filter((file) => file.is_folder));
 
 const fetchFiles = async () => {
   try {
-    startLoading()
-    const response = await $axios.get('/upload/files/');
-    console.log(response)
-    files.value = response.data
+    startLoading();
+    const params: any = {};
+    if (parent.value) {
+      params["parent_id"] = parent.value.id;
+    }
+    const response = await $axios.get("/upload/files/", {
+      params: { ...params },
+    });
+    console.log(response);
+    files.value = response.data;
   } catch (error) {
-    console.log(error)
+    console.log(error);
   } finally {
-    stopLoading()
+    stopLoading();
   }
-}
+};
+
+const setParent = (val: FileItem) => {
+  parent.value = val;
+};
+
+watch(
+  () => parent.value,
+  () => fetchFiles()
+);
 </script>
 
 <style scoped></style>

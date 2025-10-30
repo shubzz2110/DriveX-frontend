@@ -213,7 +213,7 @@
 }
 
 .p-datatable-tbody > tr {
-    @apply bg-surface-0 dark:bg-surface-900 text-surface-900 dark:text-surface-0 transition-colors duration-200 font-normal text-sm
+    @apply bg-surface-0 hover:bg-surface-100 dark:bg-surface-900 text-surface-900 dark:text-surface-0 transition-colors duration-200 font-normal text-sm cursor-default
 }
 
 .p-datatable-tbody > tr > td {

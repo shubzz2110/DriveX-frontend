@@ -118,7 +118,7 @@ const uploadFiles = async () => {
 
   try {
     startLoading()
-    const response = await $axios.post('/upload/files/', formData, {
+    await $axios.post('/upload/files/', formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       }
