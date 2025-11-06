@@ -1,6 +1,7 @@
 <template>
   <div class="flex flex-col w-full h-full overflow-hidden p-5 gap-y-10">
-    <h1 class="page-heading">My Drive</h1>
+    <!-- <h1 class="page-heading">My Drive</h1> -->
+    <Breadcrumb :model="breadcrumbs" :home="home" />
     <div
       class="flex flex-col xl:flex-row xl:items-center xl:justify-between w-full h-max gap-5"
     >
@@ -86,6 +87,7 @@
         class="flex flex-col w-full h-full gap-5 overflow-auto"
       >
         <div
+          v-if="rFolders.length > 0"
           class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 4xl:grid-cols-6 gap-5"
         >
           <DriveFolderCard
@@ -98,7 +100,12 @@
         <div
           class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 4xl:grid-cols-6 gap-5"
         >
-          <DriveCard v-for="file in rFiles" :key="file.id" :file="file" />
+          <DriveCard
+            v-for="file in rFiles"
+            :key="file.id"
+            :file="file"
+            @moveToTrash="moveToTrash"
+          />
         </div>
       </div>
 
@@ -109,17 +116,20 @@
       :showModal="showUploadFileModal"
       @close-modal="closeUploadFileModal"
       :fetchFiles="fetchFiles"
+      :parent="parent"
     />
     <DriveModalCreateFolder
       v-if="showCreateFolderModal"
       :fetch-files="fetchFiles"
       :showModal="showCreateFolderModal"
       @close-modal="closeCreateFolderModal"
+      :parent="parent"
     />
   </div>
 </template>
 
 <script setup lang="ts">
+import type { MenuItem } from "primevue/menuitem";
 import type { FileItem } from "~/lib/definations";
 
 definePageMeta({
@@ -147,6 +157,14 @@ const sortOptions = [
 ];
 const files = ref<FileItem[]>([]);
 const parent = ref<FileItem | null>(null);
+const breadcrumbs = ref<MenuItem[]>([]);
+const home = ref<MenuItem>({
+  label: "My Drive",
+  command: () => {
+    parent.value = null;
+    breadcrumbs.value = [];
+  },
+});
 
 onMounted(() => {
   fetchFiles();
@@ -176,6 +194,37 @@ const fetchFiles = async () => {
 
 const setParent = (val: FileItem) => {
   parent.value = val;
+  const index = breadcrumbs.value.findIndex((bc) => bc.id === val.id);
+  console.log(index);
+  if (index === -1) {
+    breadcrumbs.value.push({
+      id: val.id,
+      label: val.file_name,
+      command: () => {
+        parent.value = val;
+        breadcrumbs.value = breadcrumbs.value.slice(
+          0,
+          breadcrumbs.value.findIndex((bc) => bc.id === val.id) + 1
+        );
+      },
+    });
+  } else {
+    breadcrumbs.value = breadcrumbs.value.slice(0, index + 1);
+  }
+};
+
+const moveToTrash = async (file: FileItem) => {
+  try {
+    startLoading();
+    await $axios.put(`/upload/files/${file.id}/`, {
+      is_trashed: true,
+    });
+    fetchFiles();
+  } catch (error) {
+    console.log(error);
+  } finally {
+    stopLoading();
+  }
 };
 
 watch(

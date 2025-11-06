@@ -71,10 +71,15 @@ const props = defineProps<{
   };
 }>();
 
+const emits = defineEmits<{
+  (e: "view-file", file: typeof props.file): void;
+  (e: "move-to-trash", file: typeof props.file): void;
+}>();
+
 const menu = ref();
 const menuItems: MenuItem[] = [
-  { label: "View", icon: "pi pi-eye" },
-  { label: "Move to trash", icon: "pi pi-trash" },
+  { label: "View", icon: "pi pi-eye", command: () => emits("view-file", props.file) },
+  { label: "Move to trash", icon: "pi pi-trash", command: () => emits("move-to-trash", props.file) },
 ];
 const toggle = (event: Event) => {
   menu.value.toggle(event);

@@ -87,15 +87,19 @@
 </template>
 
 <script setup lang="ts">
+import type { FileItem } from "~/lib/definations";
+
 const props = defineProps<{
   showModal: boolean;
   fetchFiles: () => void;
+  parent: FileItem | null;
 }>();
 const emits = defineEmits(["closeModal"]);
 
-const { startLoading, stopLoading } = useLoading()
-const { $axios } = useNuxtApp()
-const toast = useToast()
+const { startLoading, stopLoading } = useLoading();
+const { $axios } = useNuxtApp();
+const toast = useToast();
+const authStore = useAuthStore();
 
 const selectedFiles = ref<File[]>([]);
 
@@ -116,25 +120,26 @@ const uploadFiles = async () => {
     formData.append("files", file);
   });
 
+  if (props.parent) {
+    formData.append("parent", props.parent.id.toString());
+  }
+
   try {
-    startLoading()
-    await $axios.post('/upload/files/', formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      }
-    })
-    props.fetchFiles()
+    startLoading();
+    await $axios.post("/upload/files/", formData, {});
+    props.fetchFiles();
+    authStore.fetchUser();
     toast.add({
-      severity: 'success',
+      severity: "success",
       summary: "Success",
       detail: "File has been uploaded successfully",
-      life: 5000
-    })
-    emits('closeModal')
+      life: 5000,
+    });
+    emits("closeModal");
   } catch (error) {
-    console.log(error)
+    console.log(error);
   } finally {
-    stopLoading()
+    stopLoading();
   }
 };
 </script>

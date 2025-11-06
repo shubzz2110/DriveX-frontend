@@ -1,4 +1,3 @@
-import axios from "axios";
 import type { User } from "~/lib/definations";
 
 export const useAuthStore = defineStore(
@@ -15,11 +14,24 @@ export const useAuthStore = defineStore(
       token.value = newToken
     }
 
+    const fetchUser = async () => {
+      const { $axios } = useNuxtApp();
+      try {
+        console.log("Fetching user in store")
+        const response = await $axios.get("/auth/user/");
+        setUser(response.data);
+        console.log(response)
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    }
+
     return {
       user,
       token,
       setToken,
       setUser,
+      fetchUser,
     };
   },
   { persist: true }

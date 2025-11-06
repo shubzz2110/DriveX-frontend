@@ -42,15 +42,16 @@
         <h1 class="text-surface-800 font-semibold text-sm leading-4">
           Storage
         </h1>
-        <h1 class="text-surface-800 font-normal text-xs">20%</h1>
+        <h1 class="text-surface-800 font-normal text-xs">{{ calculateStorageUsageBarWidth }}%</h1>
       </div>
       <div
         class="relative bg-surface-200 w-full h-2 rounded-full overflow-hidden"
       >
-        <div class="absolute bg-accent h-full" style="width: 20%"></div>
+        <div class="absolute bg-accent h-full" :style="`width: ${calculateStorageUsageBarWidth}%`"></div>
       </div>
       <p class="text-surface-500 font-normal text-xs leading-4">
-        10 of 100GB used
+        {{ formatFileSize(authStore?.user?.storage_used ?? 0) }} of
+        {{ formatFileSize(authStore?.user?.storage_assigned ?? 0) }} used
       </p>
     </div>
   </div>
@@ -59,17 +60,37 @@
 <script setup lang="ts">
 import type { MenuItem } from "primevue/menuitem";
 
-const { showSidebar, openCreateFolderModal, openUploadFileModal } = useAppStore();
-const menu = ref();
+const { showSidebar, openCreateFolderModal, openUploadFileModal } =
+  useAppStore();
+const authStore = useAuthStore();
+const { $axios } = useNuxtApp();
 
+const menu = ref();
 const menuItems: MenuItem[] = [
-  { label: "Upload File", icon: "pi pi-file", command: () => openUploadFileModal() },
-  { label: "Create Folder", icon: "pi pi-folder", command: () => openCreateFolderModal() },
+  {
+    label: "Upload File",
+    icon: "pi pi-file",
+    command: () => openUploadFileModal(),
+  },
+  {
+    label: "Create Folder",
+    icon: "pi pi-folder",
+    command: () => openCreateFolderModal(),
+  },
 ];
 
 const toggle = (event: Event) => {
   menu.value.toggle(event);
 };
+
+const calculateStorageUsageBarWidth = computed(() => {
+  return authStore && authStore.user
+    ? Math.min(
+        100,
+        Math.round((authStore.user.storage_used / authStore.user.storage_assigned) * 100)
+      )
+    : 0;
+})
 
 const navigationItems = ref([
   { id: 1, icon: "pi-home", name: "My Drive", slug: "drive", url: "/drive" },

@@ -36,10 +36,14 @@
 
 <script setup lang="ts">
 import * as yup from "yup";
+import type { FileItem } from "~/lib/definations";
+
 const props = defineProps<{
   showModal: boolean;
   fetchFiles: () => void;
+  parent: FileItem | null;
 }>();
+
 const emits = defineEmits(["closeModal"]);
 
 const { $axios } = useNuxtApp();
@@ -88,17 +92,28 @@ const validateForm = async () => {
 
 const handleCreateFolder = async () => {
   if (await validateForm()) {
+    const payload: any = {
+      file_name: folderName.value,
+      is_folder: true,
+    };
+    console.log(props.parent)
+    if (props.parent) {
+      payload["parent"] = props.parent.id.toString();
+    }
+
     try {
-      isLoading.value = true
+      isLoading.value = true;
       await $axios.post("/upload/files/", {
         file_name: folderName.value,
         is_folder: true,
+        parent: props.parent?.id.toString(),
       });
+      props.fetchFiles();
       toast.add({
         severity: "success",
         summary: "Success",
         detail: `Folder ${folderName.value} created successfully`,
-        life: 5000
+        life: 5000,
       });
       emits("closeModal");
     } catch (error) {

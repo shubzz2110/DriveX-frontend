@@ -1,5 +1,5 @@
 .p-breadcrumb {
-    @apply bg-surface-0 dark:bg-surface-900 p-4 overflow-x-auto
+    @apply overflow-x-auto
 }
 
 .p-breadcrumb-list {
@@ -7,7 +7,7 @@
 }
 
 .p-breadcrumb-separator {
-    @apply flex items-center text-surface-400 dark:text-surface-500
+    @apply flex items-center text-surface-600 dark:text-surface-700
 }
 
 .p-breadcrumb-separator-icon:dir(rtl) {
@@ -20,8 +20,8 @@
 
 .p-breadcrumb-item-link {
     @apply no-underline flex items-center gap-2 transition-colors duration-200 rounded-md
-        text-surface-500 dark:text-surface-400
-        focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-primary
+        text-surface-800 dark:text-surface-400
+        focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-primary text-[28px] leading-9
 }
 
 .p-breadcrumb-item-link:hover .p-breadcrumb-item-label {

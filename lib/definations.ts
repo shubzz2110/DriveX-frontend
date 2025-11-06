@@ -10,6 +10,8 @@ export interface User {
   email: string;
   avatar: string | null;
   date_joined: Date;
+  storage_used: number; // in bytes
+  storage_assigned: number; // in bytes
 }
 
 export interface FileItem {
